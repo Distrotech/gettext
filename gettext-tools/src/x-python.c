@@ -1,5 +1,5 @@
 /* xgettext Python backend.
-   Copyright (C) 2002-2003, 2005-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002-2003, 2005-2013 Free Software Foundation, Inc.
 
    This file was written by Bruno Haible <haible@clisp.cons.org>, 2002.
 
@@ -133,6 +133,18 @@ init_flag_table_python ()
   xgettext_record_flag ("dngettext:3:pass-python-format");
   xgettext_record_flag ("_:1:pass-python-format");
   /* xgettext_record_flag ("%:1:python-format"); // % is an infix operator! */
+
+  xgettext_record_flag ("gettext:1:pass-python-brace-format");
+  xgettext_record_flag ("ugettext:1:pass-python-brace-format");
+  xgettext_record_flag ("dgettext:2:pass-python-brace-format");
+  xgettext_record_flag ("ngettext:1:pass-python-brace-format");
+  xgettext_record_flag ("ngettext:2:pass-python-brace-format");
+  xgettext_record_flag ("ungettext:1:pass-python-brace-format");
+  xgettext_record_flag ("ungettext:2:pass-python-brace-format");
+  xgettext_record_flag ("dngettext:2:pass-python-brace-format");
+  xgettext_record_flag ("dngettext:3:pass-python-brace-format");
+  xgettext_record_flag ("_:1:pass-python-brace-format");
+  xgettext_record_flag (".format:1:python-brace-format");
 }
 
 
@@ -990,6 +1002,7 @@ enum token_type_ty
   token_type_lparen,            /* ( */
   token_type_rparen,            /* ) */
   token_type_comma,             /* , */
+  token_type_period,            /* . */
   token_type_lbracket,          /* [ */
   token_type_rbracket,          /* ] */
   token_type_string,            /* "abc", 'abc', """abc""", '''abc''' */
@@ -1403,7 +1416,7 @@ phase5_get (token_ty *tp)
             if (!(c1 >= '0' && c1 <= '9'))
               {
 
-                tp->type = token_type_other;
+                tp->type = token_type_period;
                 return;
               }
           }
@@ -1646,6 +1659,132 @@ x_python_lex (token_ty *tp)
 }
 
 
+/* A token buffer used as a lookahead buffer.  */
+
+typedef struct token_buffer_ty token_buffer_ty;
+struct token_buffer_ty
+{
+  token_ty *items;
+  size_t first;                 /* first index */
+  size_t last;                  /* last index, exclusive */
+  size_t nitems;
+  token_buffer_ty *outer_buffer;
+};
+
+static token_buffer_ty *
+token_buffer_alloc (token_buffer_ty *outer_buffer)
+{
+  token_buffer_ty *result = XZALLOC (token_buffer_ty);
+  result->outer_buffer = outer_buffer;
+  return result;
+}
+
+/* Pushes the token TOKEN onto the beginning of the buffer BUFFER.  */
+static void
+token_buffer_push_first (token_buffer_ty *buffer, token_ty *token)
+{
+  if (buffer->last >= buffer->nitems)
+    {
+      size_t nbytes;
+
+      buffer->nitems = 2 * buffer->nitems + 4;
+      nbytes = buffer->nitems * sizeof (token_ty);
+      buffer->items = xrealloc (buffer->items, nbytes);
+    }
+  memmove (&buffer->items[buffer->first + 1],
+           &buffer->items[buffer->first],
+           (buffer->last - buffer->first) * sizeof (token_ty));
+  buffer->last++;
+  memcpy (&buffer->items[buffer->first], token, sizeof (token_ty));
+}
+
+/* Pushes the token TOKEN onto the end of the buffer BUFFER.  */
+static inline void
+token_buffer_push_last (token_buffer_ty *buffer, token_ty *token)
+{
+  if (buffer->last >= buffer->nitems)
+    {
+      size_t nbytes;
+
+      buffer->nitems = 2 * buffer->nitems + 4;
+      nbytes = buffer->nitems * sizeof (token_ty);
+      buffer->items = xrealloc (buffer->items, nbytes);
+    }
+  memcpy (&buffer->items[buffer->last++], token, sizeof (token_ty));
+}
+
+/* Pops the least recently pushed token from the buffer BUFFER and returns it.
+   Returns NULL if the buffer is empty.  */
+static inline bool
+token_buffer_pull (token_buffer_ty *buffer, token_ty *token)
+{
+  if (buffer->last - buffer->first > 0)
+    {
+      memcpy (token, &buffer->items[buffer->first++], sizeof (token_ty));
+      return true;
+    }
+  if (buffer->outer_buffer)
+    return token_buffer_pull (buffer->outer_buffer, token);
+  return false;
+}
+
+/* Frees all resources allocated by buffer BUFFER.  */
+static inline void
+token_buffer_free (token_buffer_ty *buffer)
+{
+  free (buffer->items);
+  free (buffer);
+}
+
+static bool
+skip_balanced (token_type_ty delim,
+               token_buffer_ty *buffer)
+{
+  for (;;)
+    {
+      token_ty token;
+
+      x_python_lex (&token);
+      token_buffer_push_last (buffer, &token);
+
+      switch (token.type)
+        {
+        case token_type_symbol:
+        case token_type_comma:
+        case token_type_string:
+        case token_type_other:
+        case token_type_period:
+          break;
+
+        case token_type_lparen:
+          if (skip_balanced (token_type_rparen, buffer))
+            return true;
+          break;
+
+        case token_type_rparen:
+          if (delim == token_type_rparen || delim == token_type_eof)
+            return false;
+          break;
+
+        case token_type_lbracket:
+          if (skip_balanced (token_type_rbracket, buffer))
+            return true;
+          break;
+
+        case token_type_rbracket:
+          if (delim == token_type_rbracket || delim == token_type_eof)
+            return false;
+          break;
+
+        case token_type_eof:
+          return true;
+
+        default:
+          abort ();
+        }
+    }
+}
+
 /* ========================= Extracting strings.  ========================== */
 
 
@@ -1660,12 +1799,26 @@ static flag_context_list_table_ty *flag_context_list_table;
    the grammar to the compiler.
 
      Normal handling: Look for
-       keyword ( ... msgid ... )
+       keyword ( ... msgid ... ) after_keyword?
      Plural handling: Look for
-       keyword ( ... msgid ... msgid_plural ... )
+       keyword ( ... msgid ... msgid_plural ... ) after_keyword?
 
    We use recursion because the arguments before msgid or between msgid
-   and msgid_plural can contain subexpressions of the same form.  */
+   and msgid_plural can contain subexpressions of the same form.
+
+   after_keyword represents a method call against a string object.
+   For example:
+       _("foo {bar} baz").format(bar="bar")
+   where keyword is "_" and after_keyword is ".format".
+
+   If after_keyword is present, we transform the sequence:
+       keyword ( ... msgid ... ) after_keyword
+   into:
+       after_keyword ( keyword ( ... msgid ... ) ) after_keyword
+
+   and scan the sequence again, so that the flag context introduced by
+   after_keyword have an effect on the inner context.
+*/
 
 
 /* Extract messages until the next balanced closing parenthesis or bracket.
@@ -1678,7 +1831,8 @@ extract_balanced (message_list_ty *mlp,
                   token_type_ty delim,
                   flag_context_ty outer_context,
                   flag_context_list_iterator_ty context_iter,
-                  struct arglist_parser *argparser)
+                  struct arglist_parser *argparser,
+                  token_buffer_ty *buffer)
 {
   /* Current argument number.  */
   int arg = 1;
@@ -1699,9 +1853,13 @@ extract_balanced (message_list_ty *mlp,
 
   for (;;)
     {
-      token_ty token;
+      token_ty token, keyword_token;
+      bool is_from_buffer = false;
 
-      x_python_lex (&token);
+      is_from_buffer = token_buffer_pull (buffer, &token);
+      if (!is_from_buffer)
+        x_python_lex (&token);
+
       switch (token.type)
         {
         case token_type_symbol:
@@ -1713,6 +1871,7 @@ extract_balanced (message_list_ty *mlp,
                 == 0)
               {
                 next_shapes = (const struct callshapes *) keyword_value;
+                keyword_token = token;
                 state = 1;
               }
             else
@@ -1723,18 +1882,75 @@ extract_balanced (message_list_ty *mlp,
               flag_context_list_table_lookup (
                 flag_context_list_table,
                 token.string, strlen (token.string)));
-          free (token.string);
+          if (state == 0 || is_from_buffer)
+            free (token.string);
           continue;
 
         case token_type_lparen:
+          if (state == 1 && !is_from_buffer)
+            {
+              token_ty next_token;
+              token_ty lparen_token, rparen_token;
+              char *dot_keyword;
+
+              token_buffer_push_last (buffer, &keyword_token);
+              token_buffer_push_last (buffer, &token);
+
+              if (skip_balanced (token_type_rparen, buffer))
+                {
+                  xgettext_current_source_encoding = po_charset_utf8;
+                  arglist_parser_done (argparser, arg);
+                  xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+                  token_buffer_free (buffer);
+                  return true;
+                }
+
+              x_python_lex (&next_token);
+              if (next_token.type != token_type_period)
+                {
+                  token_buffer_push_last (buffer, &next_token);
+                  next_context_iter = null_context_list_iterator;
+                  state = 0;
+                  continue;
+                }
+
+              x_python_lex (&next_token);
+              if (next_token.type != token_type_symbol)
+                {
+                  token_buffer_push_last (buffer, &next_token);
+                  next_context_iter = null_context_list_iterator;
+                  state = 0;
+                  continue;
+                }
+
+              lparen_token.type = token_type_lparen;
+              lparen_token.line_number = next_token.line_number;
+              token_buffer_push_first (buffer, &lparen_token);
+
+              rparen_token.type = token_type_rparen;
+              rparen_token.line_number = next_token.line_number;
+              token_buffer_push_last (buffer, &rparen_token);
+
+              dot_keyword = xasprintf (".%s", next_token.string);
+              free (next_token.string);
+              next_token.string = dot_keyword;
+              token_buffer_push_first (buffer, &next_token);
+
+              next_context_iter = null_context_list_iterator;
+              state = 0;
+              continue;
+            }
+
           if (extract_balanced (mlp, token_type_rparen,
                                 inner_context, next_context_iter,
                                 arglist_parser_alloc (mlp,
-                                                      state ? next_shapes : NULL)))
+                                                      state ? next_shapes : NULL),
+                                token_buffer_alloc (buffer)))
             {
               xgettext_current_source_encoding = po_charset_utf8;
               arglist_parser_done (argparser, arg);
               xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+              token_buffer_free (buffer);
               return true;
             }
           next_context_iter = null_context_list_iterator;
@@ -1747,6 +1963,7 @@ extract_balanced (message_list_ty *mlp,
               xgettext_current_source_encoding = po_charset_utf8;
               arglist_parser_done (argparser, arg);
               xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+              token_buffer_free (buffer);
               return false;
             }
           next_context_iter = null_context_list_iterator;
@@ -1766,11 +1983,13 @@ extract_balanced (message_list_ty *mlp,
         case token_type_lbracket:
           if (extract_balanced (mlp, token_type_rbracket,
                                 null_context, null_context_list_iterator,
-                                arglist_parser_alloc (mlp, NULL)))
+                                arglist_parser_alloc (mlp, NULL),
+                                token_buffer_alloc (buffer)))
             {
               xgettext_current_source_encoding = po_charset_utf8;
               arglist_parser_done (argparser, arg);
               xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+              token_buffer_free (buffer);
               return true;
             }
           next_context_iter = null_context_list_iterator;
@@ -1783,6 +2002,7 @@ extract_balanced (message_list_ty *mlp,
               xgettext_current_source_encoding = po_charset_utf8;
               arglist_parser_done (argparser, arg);
               xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+              token_buffer_free (buffer);
               return false;
             }
           next_context_iter = null_context_list_iterator;
@@ -1815,8 +2035,10 @@ extract_balanced (message_list_ty *mlp,
           xgettext_current_source_encoding = po_charset_utf8;
           arglist_parser_done (argparser, arg);
           xgettext_current_source_encoding = xgettext_current_file_source_encoding;
+          token_buffer_free (buffer);
           return true;
 
+        case token_type_period:
         case token_type_other:
           next_context_iter = null_context_list_iterator;
           state = 0;
@@ -1869,7 +2091,8 @@ extract_python (FILE *f,
      due to an unbalanced closing parenthesis, just restart it.  */
   while (!extract_balanced (mlp, token_type_eof,
                             null_context, null_context_list_iterator,
-                            arglist_parser_alloc (mlp, NULL)))
+                            arglist_parser_alloc (mlp, NULL),
+                            token_buffer_alloc (NULL)))
     ;
 
   fp = NULL;

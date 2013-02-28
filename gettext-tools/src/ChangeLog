@@ -1,3 +1,29 @@
+2013-02-28  Daiki Ueno  <ueno@gnu.org>
+
+	* message.h (format_type): New enum value 'format_python'.
+	(NFORMATS): Increment.
+	* message.c (format_language): Add format_python_brace.
+	(format_language_pretty): Likewise.
+	* format.h (formatstring_python_brace): New declaration.
+	* format-python-brace.c: New file, based on format-perl-brace.c.
+	* format.c (formatstring_parsers): Add formatstring_python_brace.
+	* x-python.c (init_flag_table_python): Also register flags for
+	python-brace-format.
+	(struct token_buffer_ty): New type.
+	(token_buffer_alloc): New function.
+	(token_buffer_push_first): New function.
+	(token_buffer_push_last): New function.
+	(token_buffer_pull): New function.
+	(token_buffer_free): New function.
+	(skip_balanced): New function.
+	(extract_balanced): Handle python brace format.  Add extra
+	argument BUFFER.
+	* x-python.h (SCANNERS_PYTHON): Refer to formatstring_python_brace.
+	* xgettext.c (xgettext_record_flag): Store format_python_brace
+	flags in flag_table_python.
+	* Makefile.am (FORMAT_SOURCE): Add format-python-brace.c.
+	* FILES: Update.
+
 2013-02-25  Daiki Ueno  <ueno@gnu.org>
 
 	* Makefile.am (libgettextsrc_la_CPPFLAGS): Define to specify Woe32
