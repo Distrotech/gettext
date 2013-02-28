@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Test Python support: recognition of format strings
+
+tmpfiles=""
+trap 'rm -fr $tmpfiles' 1 2 3 15
+
+tmpfiles="$tmpfiles xg-py-5.py"
+cat <<\EOF > xg-py-5.py
+# Recognition of format strings.
+_("This is {only} a brace formatstring.").format(only = "only")
+_("This is %s." % "a format");
+EOF
+
+tmpfiles="$tmpfiles xg-py-5.tmp.po xg-py-5.po"
+: ${XGETTEXT=xgettext}
+${XGETTEXT} --add-comments --omit-header --no-location --keyword=_ \
+  -d xg-py-5.tmp xg-py-5.py
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < xg-py-5.tmp.po > xg-py-5.po
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+
+tmpfiles="$tmpfiles xg-py-5.ok"
+cat <<EOF > xg-py-5.ok
+#. Recognition of format strings.
+#, python-brace-format
+msgid "This is {only} a brace formatstring."
+msgstr ""
+
+#, python-format
+msgid "This is %s."
+msgstr ""
+EOF
+
+: ${DIFF=diff}
+${DIFF} xg-py-5.ok xg-py-5.po
+result=$?
+
+rm -fr $tmpfiles
+
+exit $result

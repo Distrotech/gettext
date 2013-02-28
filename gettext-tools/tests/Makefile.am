@@ -91,7 +91,7 @@ TESTS = gettext-1 gettext-2 gettext-3 gettext-4 gettext-5 gettext-6 gettext-7 \
 	xgettext-po-1 \
 	xgettext-properties-1 \
 	xgettext-python-1 xgettext-python-2 xgettext-python-3 \
-	xgettext-python-4 \
+	xgettext-python-4 xgettext-python-5 \
 	xgettext-scheme-1 xgettext-scheme-2 xgettext-scheme-3 \
 	xgettext-sh-1 xgettext-sh-2 xgettext-sh-3 xgettext-sh-4 xgettext-sh-5 \
 	xgettext-sh-6 \
@@ -111,7 +111,7 @@ TESTS = gettext-1 gettext-2 gettext-3 gettext-4 gettext-5 gettext-6 gettext-7 \
 	format-librep-1 format-librep-2 \
 	format-lisp-1 format-lisp-2 \
 	format-php-1 format-php-2 \
-	format-python-1 format-python-2 \
+	format-python-1 format-python-2 format-python-brace-1 \
 	format-pascal-1 format-pascal-2 \
 	format-perl-1 format-perl-2 \
 	format-perl-brace-1 format-perl-brace-2 \
