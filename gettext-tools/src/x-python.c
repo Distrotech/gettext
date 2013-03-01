@@ -1799,25 +1799,26 @@ static flag_context_list_table_ty *flag_context_list_table;
    the grammar to the compiler.
 
      Normal handling: Look for
-       keyword ( ... msgid ... ) after_keyword?
+       keyword '(' ... msgid ... ')' ['.' dot_keyword]
      Plural handling: Look for
-       keyword ( ... msgid ... msgid_plural ... ) after_keyword?
+       keyword '(' ... msgid ... msgid_plural ... ')' ['.' dot_keyword]
 
    We use recursion because the arguments before msgid or between msgid
    and msgid_plural can contain subexpressions of the same form.
 
-   after_keyword represents a method call against a string object.
-   For example:
+   dot_keyword is used to represent a method call against a string
+   object.  For example:
        _("foo {bar} baz").format(bar="bar")
-   where keyword is "_" and after_keyword is ".format".
+   where keyword is "_" and dot_keyword is "format".
 
-   If after_keyword is present, we transform the sequence:
-       keyword ( ... msgid ... ) after_keyword
+   If dot_keyword is present, we transform the sequence:
+       keyword '(' ... msgid ... ')' '.' dot_keyword
    into:
-       after_keyword ( keyword ( ... msgid ... ) ) after_keyword
+       '.' dot_keyword '(' keyword '(' ... msgid ... ')' ')' '.' dot_keyword
 
    and scan the sequence again, so that the flag context introduced by
-   after_keyword have an effect on the inner context.
+   dot_keyword have an effect on the inner context introduced by
+   keyword.  The transformation happens only once for each dot_keyword.
 */
 
 
