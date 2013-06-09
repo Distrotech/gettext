@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-tools 0.13-pre1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2012-12-25 14:22+0900\n"
+"POT-Creation-Date: 2013-06-09 16:10+0200\n"
 "PO-Revision-Date: 2003-11-23 11:43+0200\n"
 "Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
 "Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
@@ -57,32 +57,32 @@ msgstr ""
 msgid "write error"
 msgstr "eroare de scriere"
 
-#: gnulib-lib/copy-acl.c:611 gnulib-lib/copy-file.c:216
+#: gnulib-lib/copy-acl.c:54 gnulib-lib/copy-file.c:217
 #, c-format
 msgid "preserving permissions for %s"
 msgstr ""
 
-#: gnulib-lib/copy-file.c:193
+#: gnulib-lib/copy-file.c:194
 #, fuzzy, c-format
 msgid "error while opening %s for reading"
 msgstr "eroare în timpul deschiderii \"%s\" pentru citire"
 
-#: gnulib-lib/copy-file.c:197
+#: gnulib-lib/copy-file.c:198
 #, fuzzy, c-format
 msgid "cannot open backup file %s for writing"
 msgstr "nu se poate deschide fiºierul de backup \"%s\" pentru scriere"
 
-#: gnulib-lib/copy-file.c:201
+#: gnulib-lib/copy-file.c:202
 #, fuzzy, c-format
 msgid "error reading %s"
 msgstr "eroare în citirea lui \"%s\""
 
-#: gnulib-lib/copy-file.c:205
+#: gnulib-lib/copy-file.c:206
 #, fuzzy, c-format
 msgid "error writing %s"
 msgstr "eroare în scrierea lui \"%s\""
 
-#: gnulib-lib/copy-file.c:209
+#: gnulib-lib/copy-file.c:210
 #, fuzzy, c-format
 msgid "error after reading %s"
 msgstr "eroare dupã citirea lui \"%s\""
@@ -287,11 +287,6 @@ msgstr ""
 
 #: gnulib-lib/quotearg.c:313
 msgid "'"
-msgstr ""
-
-#: gnulib-lib/set-mode-acl.c:697
-#, c-format
-msgid "setting permissions for %s"
 msgstr ""
 
 #: gnulib-lib/spawn-pipe.c:140 gnulib-lib/spawn-pipe.c:143
@@ -2460,7 +2455,7 @@ msgstr ""
 "setul de caractere þintã \"%s\" nu este un nume de codare(encoding) portabil."
 
 #: src/msgl-cat.c:442 src/msgl-cat.c:448 src/msgl-charset.c:92
-#: src/msgl-charset.c:127 src/po-xerror.c:121 src/po-xerror.c:146
+#: src/msgl-charset.c:127 src/po-xerror.c:122 src/po-xerror.c:147
 #: src/xgettext.c:3016
 #, c-format
 msgid "warning: "

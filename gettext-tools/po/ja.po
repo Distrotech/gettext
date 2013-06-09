@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext-tools 0.18\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2012-12-25 14:22+0900\n"
+"POT-Creation-Date: 2013-06-09 16:10+0200\n"
 "PO-Revision-Date: 2012-10-02 05:46+0900\n"
 "Last-Translator: Masahito Yamaga <ma@yama-ga.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -55,32 +55,32 @@ msgstr "一時ディレクトリ %s を削除できません"
 msgid "write error"
 msgstr "書き込みエラー"
 
-#: gnulib-lib/copy-acl.c:611 gnulib-lib/copy-file.c:216
+#: gnulib-lib/copy-acl.c:54 gnulib-lib/copy-file.c:217
 #, c-format
 msgid "preserving permissions for %s"
 msgstr ""
 
-#: gnulib-lib/copy-file.c:193
+#: gnulib-lib/copy-file.c:194
 #, fuzzy, c-format
 msgid "error while opening %s for reading"
 msgstr "\"%s\" を読み込もうとしてエラーが発生しました"
 
-#: gnulib-lib/copy-file.c:197
+#: gnulib-lib/copy-file.c:198
 #, fuzzy, c-format
 msgid "cannot open backup file %s for writing"
 msgstr "バックアップファイル \"%s\" を書き込み用に開くことができません"
 
-#: gnulib-lib/copy-file.c:201
+#: gnulib-lib/copy-file.c:202
 #, fuzzy, c-format
 msgid "error reading %s"
 msgstr "\"%s\" を読み込み中にエラーが発生しました"
 
-#: gnulib-lib/copy-file.c:205
+#: gnulib-lib/copy-file.c:206
 #, fuzzy, c-format
 msgid "error writing %s"
 msgstr "\"%s\" を書き込み中にエラーが発生しました"
 
-#: gnulib-lib/copy-file.c:209
+#: gnulib-lib/copy-file.c:210
 #, fuzzy, c-format
 msgid "error after reading %s"
 msgstr "\"%s\" を読み込んだ後にエラーが発生しました"
@@ -280,11 +280,6 @@ msgstr "`"
 #: gnulib-lib/quotearg.c:313
 msgid "'"
 msgstr "'"
-
-#: gnulib-lib/set-mode-acl.c:697
-#, c-format
-msgid "setting permissions for %s"
-msgstr ""
 
 #: gnulib-lib/spawn-pipe.c:140 gnulib-lib/spawn-pipe.c:143
 #: gnulib-lib/spawn-pipe.c:264 gnulib-lib/spawn-pipe.c:267
@@ -2334,7 +2329,7 @@ msgstr ""
 "対象となる文字セット \"%s\" は可搬性のあるエンコーディング名ではありません"
 
 #: src/msgl-cat.c:442 src/msgl-cat.c:448 src/msgl-charset.c:92
-#: src/msgl-charset.c:127 src/po-xerror.c:121 src/po-xerror.c:146
+#: src/msgl-charset.c:127 src/po-xerror.c:122 src/po-xerror.c:147
 #: src/xgettext.c:3016
 #, c-format
 msgid "warning: "

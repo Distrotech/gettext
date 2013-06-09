@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-tools 0.14\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2012-12-25 14:22+0900\n"
+"POT-Creation-Date: 2013-06-09 16:10+0200\n"
 "PO-Revision-Date: 2004-02-16 16:00+0100\n"
 "Last-Translator: Danilo Segan <dsegan@gmx.net>\n"
 "Language-Team: Serbian <gnu@prevod.org>\n"
@@ -55,32 +55,32 @@ msgstr "не могу да направим привремени директо�
 msgid "write error"
 msgstr "грешка уписа"
 
-#: gnulib-lib/copy-acl.c:611 gnulib-lib/copy-file.c:216
+#: gnulib-lib/copy-acl.c:54 gnulib-lib/copy-file.c:217
 #, c-format
 msgid "preserving permissions for %s"
 msgstr ""
 
-#: gnulib-lib/copy-file.c:193
+#: gnulib-lib/copy-file.c:194
 #, fuzzy, c-format
 msgid "error while opening %s for reading"
 msgstr "грешка приликом отварања „%s“ за читање"
 
-#: gnulib-lib/copy-file.c:197
+#: gnulib-lib/copy-file.c:198
 #, fuzzy, c-format
 msgid "cannot open backup file %s for writing"
 msgstr "не могу да отворим резервну датотеку „%s“ ради уписа"
 
-#: gnulib-lib/copy-file.c:201
+#: gnulib-lib/copy-file.c:202
 #, fuzzy, c-format
 msgid "error reading %s"
 msgstr "грешка при читању „%s“"
 
-#: gnulib-lib/copy-file.c:205
+#: gnulib-lib/copy-file.c:206
 #, fuzzy, c-format
 msgid "error writing %s"
 msgstr "грешка при упису „%s“"
 
-#: gnulib-lib/copy-file.c:209
+#: gnulib-lib/copy-file.c:210
 #, fuzzy, c-format
 msgid "error after reading %s"
 msgstr "грешка након читања „%s“"
@@ -284,11 +284,6 @@ msgstr ""
 
 #: gnulib-lib/quotearg.c:313
 msgid "'"
-msgstr ""
-
-#: gnulib-lib/set-mode-acl.c:697
-#, c-format
-msgid "setting permissions for %s"
 msgstr ""
 
 #: gnulib-lib/spawn-pipe.c:140 gnulib-lib/spawn-pipe.c:143
@@ -2358,7 +2353,7 @@ msgid "target charset \"%s\" is not a portable encoding name."
 msgstr "одредишни скуп знакова „%s“ није преносиво име за кодирање."
 
 #: src/msgl-cat.c:442 src/msgl-cat.c:448 src/msgl-charset.c:92
-#: src/msgl-charset.c:127 src/po-xerror.c:121 src/po-xerror.c:146
+#: src/msgl-charset.c:127 src/po-xerror.c:122 src/po-xerror.c:147
 #: src/xgettext.c:3016
 #, c-format
 msgid "warning: "
