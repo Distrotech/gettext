@@ -1,0 +1,1 @@
+../../../gnulib-local/lib/libxml/xmlautomata.in.h

@@ -1,0 +1,1 @@
+../../gnulib-local/lib/styled-ostream.oo.h

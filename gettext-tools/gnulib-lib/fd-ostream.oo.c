@@ -1,0 +1,1 @@
+../../gnulib-local/lib/fd-ostream.oo.c

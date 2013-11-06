@@ -1,0 +1,1 @@
+../../gnulib-local/tests/test-moo-sub2.oo.h

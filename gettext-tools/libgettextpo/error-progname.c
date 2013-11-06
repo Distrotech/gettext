@@ -1,0 +1,1 @@
+../../gnulib-local/lib/error-progname.c

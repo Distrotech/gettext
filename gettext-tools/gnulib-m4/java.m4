@@ -1,0 +1,1 @@
+../../gnulib-local/m4/java.m4

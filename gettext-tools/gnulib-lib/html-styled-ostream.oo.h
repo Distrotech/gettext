@@ -1,0 +1,1 @@
+../../gnulib-local/lib/html-styled-ostream.oo.h

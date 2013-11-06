@@ -1,0 +1,1 @@
+../../gnulib-local/lib/file-ostream.oo.c

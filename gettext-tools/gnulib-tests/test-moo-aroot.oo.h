@@ -1,0 +1,1 @@
+../../gnulib-local/tests/test-moo-aroot.oo.h
