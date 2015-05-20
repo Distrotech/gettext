@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-runtime 0.19.4-rc1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2014-12-10 13:21+0900\n"
+"POT-Creation-Date: 2015-05-20 20:28+0200\n"
 "PO-Revision-Date: 2014-12-11 08:08+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <translation-team-vi@lists.sourceforge.net>\n"
@@ -198,7 +198,8 @@ msgstr ""
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr ""
 "Hãy thông báo lỗi nào cho <bug-gnu-gettext@gnu.org>.\n"
-"Hãy thông báo lỗi dịch nào cho <http://translationproject.org/team/vi.html>.\n"
+"Hãy thông báo lỗi dịch nào cho <http://translationproject.org/team/vi."
+"html>.\n"
 
 #: src/envsubst.c:442
 #, c-format
