@@ -29,7 +29,7 @@ msgcmp msgfmt msgmerge msgunfmt xgettext \
 msgattrib msgcat msgcomm msgconv msgen msgexec msgfilter msggrep msginit msguniq \
 recode-sr-latin
 
-noinst_PROGRAMS = hostname urlget
+noinst_PROGRAMS = hostname urlget cldr-plural
 
 lib_LTLIBRARIES = libgettextsrc.la
 
@@ -236,6 +236,9 @@ endif
 recode_sr_latin_SOURCES = recode-sr-latin.c filter-sr-latin.c
 hostname_SOURCES = hostname.c
 urlget_SOURCES = urlget.c
+cldr_plural_SOURCES = cldr-plural-exp.c cldr-plural.y
+# FIXME: Change @MSGMERGE_LIBM@ to a better name.
+cldr_plural_LDADD = $(LDADD) @MSGMERGE_LIBM@
 
 # How to build libgettextsrc.la.
 # Need ../gnulib-lib/libgettextlib.la.
@@ -464,6 +467,7 @@ install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(pkglibdir)
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) hostname$(EXEEXT) $(DESTDIR)$(pkglibdir)/hostname$(EXEEXT)
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) urlget$(EXEEXT) $(DESTDIR)$(pkglibdir)/urlget$(EXEEXT)
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) cldr-plural$(EXEEXT) $(DESTDIR)$(pkglibdir)/cldr-plural$(EXEEXT)
 	$(INSTALL_SCRIPT) user-email $(DESTDIR)$(pkglibdir)/user-email
 	$(INSTALL_SCRIPT) $(srcdir)/project-id $(DESTDIR)$(pkglibdir)/project-id
 
